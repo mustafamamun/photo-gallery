@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true,
+      "arrowFunctions": true
+    }
+  },
+  "plugins": ["react-hooks"],
+  "rules": {
+    "comma-dangle": 0,
+    "no-unexpected-multiline": "warn",
+    "semi": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
