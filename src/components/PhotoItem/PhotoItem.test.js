@@ -1,6 +1,6 @@
 import { cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { renderWithRouterMatch } from "../test-utils/route-renderer";
+import { renderWithRouterMatch } from "../../utils/route-renderer";
 import PhotoItem from "./PhotoItem";
 
 afterEach(cleanup);
