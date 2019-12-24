@@ -41,7 +41,7 @@ function PhotoItem(props) {
         <Button data-testid={"btn-bck-to-grd-view"}>Back to Grid</Button>
       </Link>
       {isErrored ? (
-        <ErrorAlert data-testid={"err-alrt"} tryAgain={fetchPhoto} />
+        <ErrorAlert tryAgain={fetchPhoto} />
       ) : (
         <LoadingOverlay active={isLoading} spinner text="Loading your photo...">
           <div data-testid={"img-details"} className="mt-3">
