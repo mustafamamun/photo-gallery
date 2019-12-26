@@ -5,21 +5,27 @@ import PhotoItem from "./PhotoItem";
 
 afterEach(() => {
   cleanup();
-  jest.clearAllMocks();
+  fetch.resetMocks();
 });
 
-it("Should load the photo details page", () => {
-  const { getByTestId } = renderWithRouterMatch(PhotoItem, {
+it("Should load the photo details page", async () => {
+  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
+  });
+  await act(async () => {
+    container;
   });
   expect(getByTestId("item-view")).not.toBe(null);
 });
 
-it("Back to grid button should exist and point to grid view", () => {
-  const { getByTestId } = renderWithRouterMatch(PhotoItem, {
+it("Back to grid button should exist and point to grid view", async () => {
+  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
+  });
+  await act(async () => {
+    container;
   });
   const backButton = getByTestId("btn-bck-to-grd-view");
   expect(backButton).not.toBe(null);
@@ -30,13 +36,15 @@ it("Back to grid button should exist and point to grid view", () => {
 });
 
 it("should call the fetch api", async () => {
-  const mockSuccessResponse = {};
-  const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-  const mockFetchPromise = Promise.resolve({
-    json: () => mockJsonPromise
-  });
-  jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
-
+  fetch.mockResponseOnce(
+    JSON.stringify({
+      albumId: 1,
+      id: 1,
+      title: "accusamus beatae ad facilis cum similique qui sunt",
+      url: "https://via.placeholder.com/600/92c952",
+      thumbnailUrl: "https://via.placeholder.com/150/92c952"
+    })
+  );
   const { container } = renderWithRouterMatch(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
@@ -45,20 +53,14 @@ it("should call the fetch api", async () => {
   await act(async () => {
     container;
   });
-  expect(global.fetch).toHaveBeenCalledTimes(1);
-  expect(global.fetch).toHaveBeenCalledWith(
+  expect(fetch.mock.calls.length).toEqual(1);
+  expect(fetch.mock.calls[0][0]).toEqual(
     "https://jsonplaceholder.typicode.com/photos/1"
   );
 });
 
 it("Should render with error", async () => {
-  const mockSuccessResponse = {};
-  const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-  const mockFetchPromise = Promise.resolve({
-    json: () => mockJsonPromise
-  });
-  jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
-
+  fetch.mockRejectOnce();
   const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
@@ -71,20 +73,15 @@ it("Should render with error", async () => {
 });
 
 it("Should render with success", async () => {
-  const mockSuccessResponse = {
-    albumId: 1,
-    id: 1,
-    title: "accusamus beatae ad facilis cum similique qui sunt",
-    url: "https://via.placeholder.com/600/92c952",
-    thumbnailUrl: "https://via.placeholder.com/150/92c952"
-  };
-  const mockJsonPromise = Promise.resolve(mockSuccessResponse);
-  const mockFetchPromise = Promise.resolve({
-    status: 200,
-    json: () => mockJsonPromise
-  });
-  jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
-
+  fetch.mockResponseOnce(
+    JSON.stringify({
+      albumId: 1,
+      id: 1,
+      title: "accusamus beatae ad facilis cum similique qui sunt",
+      url: "https://via.placeholder.com/600/92c952",
+      thumbnailUrl: "https://via.placeholder.com/150/92c952"
+    })
+  );
   const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"

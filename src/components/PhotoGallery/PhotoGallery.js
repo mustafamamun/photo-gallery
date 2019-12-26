@@ -50,6 +50,7 @@ function PhotoGallery(props) {
       const response = await fetch(
         `${backendAPI}?_page=${currentPage}&_limit=${limit}`
       );
+
       if (response.status === statusOK) {
         const respondedPhotos = await response.json();
         setPhotos(respondedPhotos);
@@ -74,7 +75,7 @@ function PhotoGallery(props) {
     <ErrorAlert tryAgain={fetchPhotos} />
   ) : (
     <LoadingOverlay active={isLoading} spinner text="Loading your photos...">
-      <div className="text-center">
+      <div className="text-center" data-testid={"img-gallery"}>
         <h1 className="mt-5">Photo Gallery</h1>
         <PhotoGrid photos={photos} />
         {!isEmpty(photos) && (
