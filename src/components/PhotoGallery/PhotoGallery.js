@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import fetch from "isomorphic-fetch";
 import ParseLinkHeader from "parse-link-header";
-import LoadingOverlay from "react-loading-overlay";
 import { Row, Col } from "react-bootstrap";
 import { isEmpty } from "lodash";
+import { OK, getStatusText, INTERNAL_SERVER_ERROR } from "http-status-codes";
 
-import { backendAPI, limits, statusOK } from "../../utils/app-config";
+import { backendAPI, limits } from "../../utils/app-config";
 import PhotoGrid from "../PhotoGrid/PhotoGrid";
 import ErrorAlert from "../ErrorAlert/ErrorAllert";
 import Pagination from "../Pagination/Pagination";
 import PageLimit from "../PageLimit/PageLimit";
+import { useContext } from "react";
+import { LoadingContext } from "../../context/LoadingContext";
 
-function PhotoGallery(props) {
+function PhotoGallery() {
   const locStIdCurPg = "photo_gallery_current_page";
   const locStIdLim = "photo_gallery_limit";
 
@@ -27,8 +29,8 @@ function PhotoGallery(props) {
   );
   const [photos, setPhotos] = useState([]);
   const [linkHeader, setLinkHeader] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isErrored, setIsErrored] = useState(false);
+  const [error, setError] = useState(false);
+  const { setIsLoading } = useContext(LoadingContext);
 
   const onPageChange = page => {
     sessionStorage.setItem(locStIdCurPg, page);
@@ -51,53 +53,53 @@ function PhotoGallery(props) {
         `${backendAPI}?_page=${currentPage}&_limit=${limit}`
       );
 
-      if (response.status === statusOK) {
+      if (response.status === OK) {
         const respondedPhotos = await response.json();
         setPhotos(respondedPhotos);
         const respondedLinks = response.headers.get("Link");
         const respondedLinkHeader = ParseLinkHeader(respondedLinks);
         setLinkHeader(respondedLinkHeader);
       } else {
-        setIsErrored(true);
+        setError({
+          status: response.status,
+          errMsg: getStatusText(response.status)
+        });
       }
     } catch (error) {
-      setIsErrored(true);
+      setError({
+        status: error.status || INTERNAL_SERVER_ERROR,
+        errMsg: getStatusText(error.status || INTERNAL_SERVER_ERROR)
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, limit]);
+  }, [currentPage, limit, setIsLoading]);
 
   useEffect(() => {
     fetchPhotos();
   }, [fetchPhotos]);
 
-  return isErrored ? (
-    <ErrorAlert tryAgain={fetchPhotos} />
+  return !isEmpty(error) ? (
+    <ErrorAlert tryAgain={fetchPhotos} errorDetails={error} />
   ) : (
-    <LoadingOverlay active={isLoading} spinner text="Loading your photos...">
-      <div className="text-center" data-testid={"img-gallery"}>
-        <h1 className="mt-5">Photo Gallery</h1>
-        <PhotoGrid photos={photos} />
-        {!isEmpty(photos) && (
-          <Row className={"mt-5 mb-3"}>
-            <Col md={8} xs={12}>
-              <Pagination
-                currentPage={currentPage}
-                linkHeader={linkHeader}
-                onSelect={onPageChange}
-              />
-            </Col>
-            <Col md={4} xs={12}>
-              <PageLimit
-                onSelect={onLimitChange}
-                limit={limit}
-                limits={limits}
-              />
-            </Col>
-          </Row>
-        )}
-      </div>
-    </LoadingOverlay>
+    <div className="text-center" data-testid={"img-gallery"}>
+      <h1 className="mt-5">Photo Gallery</h1>
+      <PhotoGrid photos={photos} />
+      {!isEmpty(photos) && (
+        <Row className={"mt-5 mb-3"}>
+          <Col md={8} xs={12}>
+            <Pagination
+              currentPage={currentPage}
+              linkHeader={linkHeader}
+              onSelect={onPageChange}
+            />
+          </Col>
+          <Col md={4} xs={12}>
+            <PageLimit onSelect={onLimitChange} limit={limit} limits={limits} />
+          </Col>
+        </Row>
+      )}
+    </div>
   );
 }
 

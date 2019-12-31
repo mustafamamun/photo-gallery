@@ -9,6 +9,7 @@
     "bootstrap": "^4.4.1",
     "date-fns": "^2.8.1",
     "es6-promise": "^4.2.8",
+    "http-status-codes": "^1.4.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.15",
     "parse-link-header": "^1.0.1",
