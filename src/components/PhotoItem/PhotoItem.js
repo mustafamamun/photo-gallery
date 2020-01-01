@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { get, isEmpty } from "lodash";
 import { Image, Button } from "react-bootstrap";
@@ -7,7 +7,6 @@ import { OK, getStatusText, INTERNAL_SERVER_ERROR } from "http-status-codes";
 
 import { backendAPI } from "../../utils/app-config";
 import ErrorAlert from "../ErrorAlert/ErrorAllert";
-import { useContext } from "react";
 import { LoadingContext } from "../../context/LoadingContext";
 
 function PhotoItem(props) {

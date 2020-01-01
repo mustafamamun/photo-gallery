@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import fetch from "isomorphic-fetch";
 import ParseLinkHeader from "parse-link-header";
 import { Row, Col } from "react-bootstrap";
@@ -10,7 +10,6 @@ import PhotoGrid from "../PhotoGrid/PhotoGrid";
 import ErrorAlert from "../ErrorAlert/ErrorAllert";
 import Pagination from "../Pagination/Pagination";
 import PageLimit from "../PageLimit/PageLimit";
-import { useContext } from "react";
 import { LoadingContext } from "../../context/LoadingContext";
 
 function PhotoGallery() {
@@ -45,7 +44,6 @@ function PhotoGallery() {
     setCurrentPage(1);
     setLimit(limit);
   };
-
   const fetchPhotos = useCallback(async () => {
     try {
       setIsLoading(true);

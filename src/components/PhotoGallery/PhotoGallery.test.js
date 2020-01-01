@@ -1,6 +1,8 @@
 import { cleanup, waitForElement, act } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { renderWithRouterMatch } from "../../utils/route-renderer";
+import { BAD_REQUEST } from "http-status-codes";
+
+import { renderWithRouteAndContext } from "../../utils/route-renderer";
 import PhotoGallery from "./PhotoGallery";
 
 afterEach(() => {
@@ -19,7 +21,7 @@ it("should call the fetch api", async () => {
       }
     ])
   );
-  const { container } = renderWithRouterMatch(PhotoGallery, {
+  const { container } = renderWithRouteAndContext(PhotoGallery, {
     route: "/",
     path: "/"
   });
@@ -33,8 +35,8 @@ it("should call the fetch api", async () => {
   );
 });
 it("should load with error", async () => {
-  fetch.mockRejectOnce();
-  const { container, getByTestId } = renderWithRouterMatch(PhotoGallery, {
+  fetch.mockRejectOnce({ status: BAD_REQUEST });
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoGallery, {
     route: "/",
     path: "/"
   });
@@ -57,7 +59,7 @@ it("should load with success", async () => {
       }
     ])
   );
-  const { container, getByTestId } = renderWithRouterMatch(PhotoGallery, {
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoGallery, {
     route: "/",
     path: "/"
   });

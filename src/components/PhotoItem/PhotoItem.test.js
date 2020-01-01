@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { renderWithRouterMatch } from "../../utils/route-renderer";
+import { BAD_REQUEST } from "http-status-codes";
+
+import { renderWithRouteAndContext } from "../../utils/route-renderer";
 import PhotoItem from "./PhotoItem";
 
 afterEach(() => {
@@ -9,7 +11,7 @@ afterEach(() => {
 });
 
 it("Should load the photo details page", async () => {
-  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
   });
@@ -20,7 +22,7 @@ it("Should load the photo details page", async () => {
 });
 
 it("Back to grid button should exist and point to grid view", async () => {
-  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
   });
@@ -45,7 +47,7 @@ it("should call the fetch api", async () => {
       thumbnailUrl: "https://via.placeholder.com/150/92c952"
     })
   );
-  const { container } = renderWithRouterMatch(PhotoItem, {
+  const { container } = renderWithRouteAndContext(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
   });
@@ -60,8 +62,8 @@ it("should call the fetch api", async () => {
 });
 
 it("Should render with error", async () => {
-  fetch.mockRejectOnce();
-  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
+  fetch.mockRejectOnce({ status: BAD_REQUEST });
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
   });
@@ -82,7 +84,7 @@ it("Should render with success", async () => {
       thumbnailUrl: "https://via.placeholder.com/150/92c952"
     })
   );
-  const { container, getByTestId } = renderWithRouterMatch(PhotoItem, {
+  const { container, getByTestId } = renderWithRouteAndContext(PhotoItem, {
     route: "/photos/1",
     path: "/photos/:id"
   });
