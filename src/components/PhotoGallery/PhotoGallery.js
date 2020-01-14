@@ -24,7 +24,7 @@ function PhotoGallery() {
   const [limit, setLimit] = useState(
     sessionStorage.getItem(locStIdLim)
       ? Number(sessionStorage.getItem(locStIdLim))
-      : 18
+      : limits[0]
   );
   const [photos, setPhotos] = useState([]);
   const [linkHeader, setLinkHeader] = useState({});
