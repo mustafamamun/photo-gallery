@@ -28,7 +28,7 @@ function PhotoGallery() {
   );
   const [photos, setPhotos] = useState([]);
   const [linkHeader, setLinkHeader] = useState({});
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({});
   const { setIsLoading } = useContext(LoadingContext);
 
   const onPageChange = page => {
@@ -57,6 +57,7 @@ function PhotoGallery() {
         const respondedLinks = response.headers.get("Link");
         const respondedLinkHeader = ParseLinkHeader(respondedLinks);
         setLinkHeader(respondedLinkHeader);
+        setError({});
       } else {
         setError({
           status: response.status,

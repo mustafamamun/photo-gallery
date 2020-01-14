@@ -11,7 +11,7 @@ import { LoadingContext } from "../../context/LoadingContext";
 
 function PhotoItem(props) {
   const [photo, setPhoto] = useState({});
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({});
   const photoId = get(props, "match.params.id");
   const { setIsLoading } = useContext(LoadingContext);
   const fetchPhoto = useCallback(async () => {
@@ -22,6 +22,7 @@ function PhotoItem(props) {
       if (response.status === OK) {
         const photo = await response.json();
         setPhoto(photo);
+        setError({});
       } else {
         setError({
           status: response.status,
